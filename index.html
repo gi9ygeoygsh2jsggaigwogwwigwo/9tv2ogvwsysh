@@ -1,74 +1,133 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TikTok Boost Premium</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
-        body{background:#000;color:#0f0;font-family:courier;text-align:center;padding:50px;margin:0;}
-        input,button{padding:15px;margin:10px;width:90%;max-width:400px;font-size:18px;}
-        button{background:#0f0;color:#000;border:none;cursor:pointer;font-weight:bold;}
-        .hidden{display:none;}#stats{font-size:22px;margin:20px;line-height:1.8;}
-        h1{margin:30px 0 10px;}.logout{color:red;font-weight:bold;}
+        body { background:#000; color:#0f0; font-family:'Courier New',monospace; text-align:center; padding:50px; margin:0; }
+        h1 { font-size:28px; margin:20px 0; }
+        h3 { margin:10px 0 30px; color:#0f0; }
+        input { width:90%; max-width:400px; padding:15px; margin:10px; font-size:18px; background:#111; color:#0f0; border:2px solid #0f0; border-radius:8px; }
+        button { width:90%; max-width:400px; padding:15px; margin:10px; font-size:18px; background:#0f0; color:#000; border:none; border-radius:8px; cursor:pointer; font-weight:bold; }
+        button:hover { background:#0c0; }
+        .hidden { display:none; }
+        #stats { font-size:22px; margin:30px 0; line-height:1.8; }
+        #timer { font-size:20px; margin:20px; }
+        .logout { color:red; font-weight:bold; font-size:24px; }
+        .active { color:#0f0; font-size:18px; margin:20px; }
     </style>
 </head>
 <body>
     <h1>TIKTOK BOOST PREMIUM</h1>
     <h3>MADE BY JRMPH</h3>
 
+    <!-- LOGIN -->
     <div id="login">
-        <input type="password" id="key" placeholder="Enter License Key">
+        <input type="password" id="key" placeholder="Enter License Key" autocomplete="off">
         <button onclick="login()">ACTIVATE</button>
     </div>
 
+    <!-- MAIN TOOL -->
     <div id="main" class="hidden">
         <input type="text" id="url" placeholder="TikTok Video URL">
-        <button onclick="start()">START BOOST</button>
-        <button onclick="stop()">STOP</button>
+        <button onclick="startBoost()">START BOOST</button>
+        <button onclick="stopBoost()">STOP BOOST</button>
         <button onclick="logout()">LOGOUT</button>
-        <div id="stats">Ready...</div>
-        <div id="active">Active Users: checking...</div>
+        <div id="stats">Ready to boost...</div>
+        <div id="timer"></div>
+        <div id="active">Checking active users...</div>
     </div>
 
     <script>
+        // YOUR RENDER BACKEND URL
         const API = "https://tiktokboostingviewslikes.onrender.com";
-        let boostInt, activeInt;
 
-        async function login(){
+        let boostInterval = null;
+        let timerInterval = null;
+        let activeInterval = null;
+
+        // LOGIN WITH KEY
+        async function login() {
             const key = document.getElementById('key').value.trim();
-            if(!key) return alert('Enter key!');
-            const res = await axios.post(`${API}/api/login`, { key });
-            if(res.data.success){
-                document.getElementById('login').classList.add('hidden');
-                document.getElementById('main').classList.remove('hidden');
-                updateActive();
-            }else alert('Invalid Key!');
+            if (!key) return alert("Enter your key!");
+
+            try {
+                const res = await axios.post(`${API}/api/login`, { key });
+                if (res.data.success) {
+                    localStorage.setItem('boost_key', key);
+                    showMain();
+                    startTimer(res.data.expires || "lifetime");
+                    updateActiveUsers();
+                } else {
+                    alert("Invalid or Expired Key");
+                }
+            } catch {
+                    alert("Backend offline or key invalid");
+                }
+            }
         }
 
-        async function start(){
+        // SHOW MAIN TOOL
+        function showMain() {
+            document.getElementById('login').classList.add('hidden');
+            document.getElementById('main').classList.remove('hidden');
+        }
+
+        // TIMER + AUTO LOGOUT
+        function startTimer(expiry) {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (expiry === 'lifetime') {
+                    document.getElementById('timer').textContent = "LIFETIME ACCESS";
+                    return;
+                }
+                const diff = new Date(expiry) - new Date();
+                if (diff <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('timer').innerHTML = '<span class="logout">KEY EXPIRED — LOGGING OUT</span>';
+                    setTimeout(logout, 3000);
+                    return;
+                }
+                const d = Math.floor(diff / 86400000);
+                const h = Math.floor((diff % 86400000) / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+                document.getElementById('timer').textContent = `Expires: \( {d}d \){h}h \( {m}m \){s}s`;
+            }, 1000);
+        }
+
+        // BOOST LOOP
+        async function startBoost() {
             const url = document.getElementById('url').value.trim();
-            if(!url || !url.includes('tiktok.com')) return alert('Invalid URL');
-            if(boostInt) clearInterval(boostInt);
+            if (!url || !url.includes('tiktok.com')) return alert("Enter valid TikTok URL");
+
+            if (boostInterval) clearInterval(boostInterval);
             let sent = 0;
-            boostInt = setInterval(async()=>{
-                const res = await axios.post(`${API}/api/boost`, { url });
-                if(res.data.success) sent += 100;
-                document.getElementById('stats').innerHTML = `Sent: ${sent.toLocaleString()}<br>Boost Running...`;
+
+            boostInterval = setInterval(async () => {
+                try {
+                    const res = await axios.post(`${API}/api/boost`, { url });
+                    if (res.data.success) sent += 100;
+                    document.getElementById('stats').innerHTML = `
+                        Sent: ${sent.toLocaleString()}<br>
+                        Boost Running...
+                    `;
+                } catch (e) {
+                    console.log("Boost error:", e.message);
+                }
             }, 4000);
         }
 
-        function stop(){
-            clearInterval(boostInt);
-            document.getElementById('stats').textContent = 'Stopped';
+        function stopBoost() {
+            clearInterval(boostInterval);
+            document.getElementById('stats').textContent = "Boost Stopped";
         }
 
-        function logout(){
-            axios.post(`${API}/api/logout`);
-            location.reload();
-        }
-
-        function updateActive(){
-            activeInt = setInterval(async()=>{
+        // ACTIVE USERS COUNTER
+        function updateActiveUsers() {
+            activeInterval = setInterval(async () => {
                 try {
                     const res = await axios.get(`${API}/api/sessions`);
                     document.getElementById('active').textContent = `Active Users: ${res.data.count}`;
@@ -76,13 +135,20 @@
             }, 5000);
         }
 
-        axios.get(`${API}/api/sessions`).then(r=>{
-            if(r.data.count > 0){
-                document.getElementById('login').classList.add('hidden');
-                document.getElementById('main').classList.remove('hidden');
-                updateActive();
+        // LOGOUT
+        function logout() {
+            localStorage.removeItem('boost_key');
+            location.reload();
+        }
+
+        // AUTO LOGIN IF KEY SAVED
+        window.onload = () => {
+            const savedKey = localStorage.getItem('boost_key');
+            if (savedKey) {
+                document.getElementById('key').value = savedKey;
+                login();
             }
-        });
+        };
     </script>
 </body>
 </html>
