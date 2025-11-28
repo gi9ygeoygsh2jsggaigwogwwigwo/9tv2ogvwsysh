@@ -5,129 +5,186 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TikTok Boost Premium</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background:#000; color:#0f0; font-family:'Courier New',monospace; text-align:center; padding:50px; margin:0; }
-        h1 { font-size:28px; margin:20px 0; }
-        h3 { margin:10px 0 30px; color:#0f0; }
-        input { width:90%; max-width:400px; padding:15px; margin:10px; font-size:18px; background:#111; color:#0f0; border:2px solid #0f0; border-radius:8px; }
-        button { width:90%; max-width:400px; padding:15px; margin:10px; font-size:18px; background:#0f0; color:#000; border:none; border-radius:8px; cursor:pointer; font-weight:bold; }
-        button:hover { background:#0c0; }
-        .hidden { display:none; }
-        #stats { font-size:22px; margin:30px 0; line-height:1.8; }
-        #timer { font-size:20px; margin:20px; }
-        .logout { color:red; font-weight:bold; font-size:24px; }
-        .active { color:#0f0; font-size:18px; margin:20px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #1a1a1a;
+        }
+        h3 {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        input {
+            width: 100%;
+            padding: 16px;
+            margin: 12px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+        }
+        button {
+            width: 100%;
+            padding: 16px;
+            margin: 12px 0;
+            background: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        button:hover { background: #3a56d4; transform: translateY(-2px); }
+        button:active { transform: translateY(0); }
+        button.stop { background: #e74c3c; }
+        button.stop:hover { background: #c0392b; }
+        button.logout { background: #95a5a6; margin-top: 20px; }
+        button.logout:hover { background: #7f8c8d; }
+        .hidden { display: none; }
+        #stats, #timer, #active {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        #timer { background: #e3f2fd; color: #1976d2; }
+        #active { background: #e8f5e8; color: #2e7d32; }
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #4361ee;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <h1>TIKTOK BOOST PREMIUM</h1>
-    <h3>MADE BY JRMPH</h3>
+    <div class="container">
+        <div class="logo">TB</div>
+        <h1>TikTok Boost Premium</h1>
+        <h3>MADE BY JRMPH</h3>
 
-    <!-- LOGIN -->
-    <div id="login">
-        <input type="password" id="key" placeholder="Enter License Key" autocomplete="off">
-        <button onclick="login()">ACTIVATE</button>
-    </div>
+        <!-- LOGIN -->
+        <div id="login">
+            <input type="password" id="key" placeholder="Enter License Key">
+            <button onclick="activate()">ACTIVATE ACCOUNT</button>
+        </div>
 
-    <!-- MAIN TOOL -->
-    <div id="main" class="hidden">
-        <input type="text" id="url" placeholder="TikTok Video URL">
-        <button onclick="startBoost()">START BOOST</button>
-        <button onclick="stopBoost()">STOP BOOST</button>
-        <button onclick="logout()">LOGOUT</button>
-        <div id="stats">Ready to boost...</div>
-        <div id="timer"></div>
-        <div id="active">Checking active users...</div>
+        <!-- MAIN TOOL -->
+        <div id="main" class="hidden">
+            <input type="text" id="url" placeholder="Paste TikTok Video URL">
+            <button onclick="startBoost()">START BOOST</button>
+            <button class="stop" onclick="stopBoost()">STOP BOOST</button>
+            <button class="logout" onclick="logout()">LOGOUT</button>
+            
+            <div id="stats">Ready to boost...</div>
+            <div id="timer">Checking key...</div>
+            <div id="active">Loading...</div>
+        </div>
     </div>
 
     <script>
-        // YOUR RENDER BACKEND URL
         const API = "https://tiktokboostingviewslikes.onrender.com";
+        let boostInt = null, timerInt = null, activeInt = null;
 
-        let boostInterval = null;
-        let timerInterval = null;
-        let activeInterval = null;
-
-        // LOGIN WITH KEY
-        async function login() {
+        async function activate() {
             const key = document.getElementById('key').value.trim();
-            if (!key) return alert("Enter your key!");
+            if (!key) return alert("Please enter your license key");
 
             try {
-                const res = await axios.post(`${API}/api/login`, { key });
+                const res = await axios.post(`${API}/api/login`, { key }, { timeout: 10000 });
                 if (res.data.success) {
                     localStorage.setItem('boost_key', key);
-                    showMain();
-                    startTimer(res.data.expires || "lifetime");
-                    updateActiveUsers();
+                    document.getElementById('login').classList.add('hidden');
+                    document.getElementById('main').classList.remove('hidden');
+                    startTimer("lifetime"); // o kaya res.data.expires
+                    updateActive();
                 } else {
                     alert("Invalid or Expired Key");
                 }
-            } catch {
-                    alert("Backend offline or key invalid");
-                }
+            } catch (e) {
+                alert("Cannot connect to server. Check your internet or backend status.");
             }
         }
 
-        // SHOW MAIN TOOL
-        function showMain() {
-            document.getElementById('login').classList.add('hidden');
-            document.getElementById('main').classList.remove('hidden');
-        }
-
-        // TIMER + AUTO LOGOUT
-        function startTimer(expiry) {
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                if (expiry === 'lifetime') {
-                    document.getElementById('timer').textContent = "LIFETIME ACCESS";
-                    return;
-                }
-                const diff = new Date(expiry) - new Date();
-                if (diff <= 0) {
-                    clearInterval(timerInterval);
-                    document.getElementById('timer').innerHTML = '<span class="logout">KEY EXPIRED — LOGGING OUT</span>';
-                    setTimeout(logout, 3000);
-                    return;
-                }
-                const d = Math.floor(diff / 86400000);
-                const h = Math.floor((diff % 86400000) / 3600000);
-                const m = Math.floor((diff % 3600000) / 60000);
-                const s = Math.floor((diff % 60000) / 1000);
-                document.getElementById('timer').textContent = `Expires: \( {d}d \){h}h \( {m}m \){s}s`;
+        function startTimer(exp) {
+            clearInterval(timerInt);
+            timerInt = setInterval(() => {
+                document.getElementById('timer').textContent = "LIFETIME ACCESS";
             }, 1000);
         }
 
-        // BOOST LOOP
         async function startBoost() {
             const url = document.getElementById('url').value.trim();
-            if (!url || !url.includes('tiktok.com')) return alert("Enter valid TikTok URL");
+            if (!url.includes('tiktok.com')) return alert("Invalid TikTok URL");
 
-            if (boostInterval) clearInterval(boostInterval);
+            if (boostInt) clearInterval(boostInt);
             let sent = 0;
+            document.getElementById('stats').innerHTML = "Boosting... 0 sent";
 
-            boostInterval = setInterval(async () => {
+            boostInt = setInterval(async () => {
                 try {
-                    const res = await axios.post(`${API}/api/boost`, { url });
+                    const res = await axios.post(`${API}/api/boost`, { url }, { timeout: 15000 });
                     if (res.data.success) sent += 100;
-                    document.getElementById('stats').innerHTML = `
-                        Sent: ${sent.toLocaleString()}<br>
-                        Boost Running...
-                    `;
+                    document.getElementById('stats').innerHTML = `Boost Running<br>Sent: ${sent.toLocaleString()}`;
                 } catch (e) {
-                    console.log("Boost error:", e.message);
+                    console.log("Boost request failed");
                 }
             }, 4000);
         }
 
         function stopBoost() {
-            clearInterval(boostInterval);
+            clearInterval(boostInt);
             document.getElementById('stats').textContent = "Boost Stopped";
         }
 
-        // ACTIVE USERS COUNTER
-        function updateActiveUsers() {
-            activeInterval = setInterval(async () => {
+        function logout() {
+            localStorage.removeItem('boost_key');
+            location.reload();
+        }
+
+        function updateActive() {
+            activeInt = setInterval(async () => {
                 try {
                     const res = await axios.get(`${API}/api/sessions`);
                     document.getElementById('active').textContent = `Active Users: ${res.data.count}`;
@@ -135,18 +192,11 @@
             }, 5000);
         }
 
-        // LOGOUT
-        function logout() {
-            localStorage.removeItem('boost_key');
-            location.reload();
-        }
-
-        // AUTO LOGIN IF KEY SAVED
+        // Auto login
         window.onload = () => {
-            const savedKey = localStorage.getItem('boost_key');
-            if (savedKey) {
-                document.getElementById('key').value = savedKey;
-                login();
+            if (localStorage.getItem('boost_key')) {
+                document.getElementById('key').value = localStorage.getItem('boost_key');
+                activate();
             }
         };
     </script>
