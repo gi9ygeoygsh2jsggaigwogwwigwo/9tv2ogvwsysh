@@ -3,202 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Boost Premium</title>
+    <title>JRMPH BOOST 2025</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://api.dicebear.com/7.x/shapes/svg?seed=jrmph" type="image/svg+xml">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #4361ee;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --light: #f8f9fa;
+            --gray: #95a5a6;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            transition: all 0.5s;
         }
         .container {
-            background: white;
-            padding: 40px 30px;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 50px 40px;
             width: 100%;
-            max-width: 420px;
+            max-width: 460px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
             text-align: center;
         }
-        h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #1a1a1a;
-        }
-        h3 {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 30px;
-            font-weight: 500;
-        }
-        input {
-            width: 100%;
-            padding: 16px;
-            margin: 12px 0;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-        input:focus {
-            outline: none;
-            border-color: #4361ee;
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
-        }
-        button {
-            width: 100%;
-            padding: 16px;
-            margin: 12px 0;
-            background: #4361ee;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        button:hover { background: #3a56d4; transform: translateY(-2px); }
-        button:active { transform: translateY(0); }
-        button.stop { background: #e74c3c; }
-        button.stop:hover { background: #c0392b; }
-        button.logout { background: #95a5a6; margin-top: 20px; }
-        button.logout:hover { background: #7f8c8d; }
-        .hidden { display: none; }
-        #stats, #timer, #active {
-            margin: 20px 0;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 500;
-        }
-        #timer { background: #e3f2fd; color: #1976d2; }
-        #active { background: #e8f5e8; color: #2e7d32; }
         .logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
-            background: #4361ee;
+            width: 100px; height: 100px;
+            background: var(--primary);
+            color: white;
             border-radius: 50%;
+            margin: 0 auto 25px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
+            font-size: 42px;
+            font-weight: 800;
+            box-shadow: 0 10px 30px rgba(67,97,238,0.4);
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #fff, #cfd9df);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .tagline {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 35px;
+            font-weight: 500;
+        }
+        input, button {
+            width: 100%;
+            padding: 16px 20px;
+            margin: 12px 0;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        input {
+            background: rgba(255,255,255,0.15);
+            border: 2px solid transparent;
             color: white;
-            font-weight: bold;
+        }
+        input::placeholder { color: rgba(255,255,255,0.7); }
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.02);
+        }
+        button {
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 8px 25px rgba(67,97,238,0.4);
+        }
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(67,97,238,0.5);
+        }
+        .btn-stop { background: var(--danger); box-shadow: 0 8px 25px rgba(231,76,60,0.4); }
+        .btn-stop:hover { background: #c0392b; }
+        .btn-logout { background: var(--gray); margin-top: 20px; }
+        .stats {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            backdrop-filter: blur(10px);
+        }
+        .counter {
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .live-users {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(46,204,113,0.2);
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        .footer {
+            margin-top: 40px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .hidden { display: none; }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">TB</div>
-        <h1>TikTok Boost Premium</h1>
-        <h3>MADE BY JRMPH</h3>
 
-        <!-- LOGIN -->
-        <div id="login">
-            <input type="password" id="key" placeholder="Enter License Key">
-            <button onclick="activate()">ACTIVATE ACCOUNT</button>
-        </div>
+<div class="container">
+    <div class="logo pulse">J</div>
+    <h1>JRMPH BOOST</h1>
+    <div class="tagline">TikTok Views + Likes • Premium 2025 Edition</div>
 
-        <!-- MAIN TOOL -->
-        <div id="main" class="hidden">
-            <input type="text" id="url" placeholder="Paste TikTok Video URL">
-            <button onclick="startBoost()">START BOOST</button>
-            <button class="stop" onclick="stopBoost()">STOP BOOST</button>
-            <button class="logout" onclick="logout()">LOGOUT</button>
-            
-            <div id="stats">Ready to boost...</div>
-            <div id="timer">Checking key...</div>
-            <div id="active">Loading...</div>
-        </div>
+    <!-- LOGIN -->
+    <div id="login">
+        <input type="password" id="key" placeholder="Enter Your License Key">
+        <button onclick="login()">ACTIVATE PREMIUM</button>
     </div>
 
-    <script>
-        const API = "https://tiktokboostingviewslikes.onrender.com";
-        let boostInt = null, timerInt = null, activeInt = null;
+    <!-- MAIN PANEL -->
+    <div id="main" class="hidden">
+        <input type="text" id="url" placeholder="https://www.tiktok.com/@user/video/123456789">
+        <button onclick="startBoost()">START BOOSTING</button>
+        <button class="btn-stop" onclick="stopBoost()">STOP BOOST</button>
 
-        async function activate() {
-            const key = document.getElementById('key').value.trim();
-            if (!key) return alert("Please enter your license key");
+        <div class="stats">
+            <div>Sent: <span id="sent" class="counter">0</span></div>
+            <div style="margin-top:10px; font-size:16px; opacity:0.9" id="status">Ready to boost...</div>
+        </div>
 
-            try {
-                const res = await axios.post(`${API}/api/login`, { key }, { timeout: 10000 });
-                if (res.data.success) {
-                    localStorage.setItem('boost_key', key);
-                    document.getElementById('login').classList.add('hidden');
-                    document.getElementById('main').classList.remove('hidden');
-                    startTimer("lifetime"); // o kaya res.data.expires
-                    updateActive();
-                } else {
-                    alert("Invalid or Expired Key");
-                }
-            } catch (e) {
-                alert("Cannot connect to server. Check your internet or backend status.");
+        <div class="live-users" id="active">Active Users: Checking...</div>
+
+        <button class="btn-logout" onclick="logout()">LOGOUT</button>
+    </div>
+
+    <div class="footer">
+        © 2025 JRMPH • UNTOUCHABLE SYSTEM • Made with ❤️ in Philippines
+    </div>
+</div>
+
+<script>
+    const API = "https://tiktokboostingviewslikes.onrender.com"; // ← change if needed
+    let interval = null;
+    let totalSent = 0;
+    let isRunning = false;
+
+    // Sound Effect
+    const successSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-confirmation-tone-2353.mp3");
+    successSound.volume = 0.3;
+
+    async function login() {
+        const key = document.getElementById('key').value.trim();
+        if (!key) return alert("Enter your key!");
+        
+        const res = await axios.post(`${API}/api/login`, { key }).catch(() => {});
+        if (res?.data?.success) {
+            localStorage.setItem('jrmph_key', key);
+            document.getElementById('login').classList.add('hidden');
+            document.getElementById('main').classList.remove('hidden');
+            updateActiveUsers();
+            setInterval(updateActiveUsers, 7000);
+        } else {
+            alert("Invalid or expired key!");
+        }
+    }
+
+    function startBoost() {
+        if (isRunning) return;
+        const url = document.getElementById('url').value.trim();
+        if (!url.includes('tiktok.com')) return alert("Invalid TikTok URL!");
+
+        isRunning = true;
+        document.getElementById('status').textContent = "Boosting... Please wait";
+        
+        interval = setInterval(async () => {
+            const res = await axios.post(`${API}/api/boost`, { url }).catch(() => {});
+            if (res?.data?.success) {
+                totalSent += 100;
+                document.getElementById('sent').textContent = totalSent.toLocaleString();
+                document.getElementById('status').textContent = "Boost successful! +100";
+                successSound.currentTime = 0;
+                successSound.play();
+            } else {
+                document.getElementById('status').textContent = "Trying again... (rate limit)";
             }
+        }, 4500); // 4.5 seconds = safe delay
+    }
+
+    function stopBoost() {
+        clearInterval(interval);
+        isRunning = false;
+        document.getElementById('status').textContent = "Stopped by user";
+    }
+
+    function logout() {
+        localStorage.removeItem('jrmph_key');
+        location.reload();
+    }
+
+    async function updateActiveUsers() {
+        const res = await axios.get(`${API}/api/sessions`).catch(() => {});
+        if (res?.data?.count !== undefined) {
+            document.getElementById('active').innerHTML = `Active Users Online: <strong>${res.data.count}</strong>`;
         }
+    }
 
-        function startTimer(exp) {
-            clearInterval(timerInt);
-            timerInt = setInterval(() => {
-                document.getElementById('timer').textContent = "LIFETIME ACCESS";
-            }, 1000);
-        }
+    // Auto login if key exists
+    if (localStorage.getItem('jrmph_key')) {
+        document.getElementById('key').value = localStorage.getItem('jrmph_key');
+        login();
+    }
+</script>
 
-        async function startBoost() {
-            const url = document.getElementById('url').value.trim();
-            if (!url.includes('tiktok.com')) return alert("Invalid TikTok URL");
-
-            if (boostInt) clearInterval(boostInt);
-            let sent = 0;
-            document.getElementById('stats').innerHTML = "Boosting... 0 sent";
-
-            boostInt = setInterval(async () => {
-                try {
-                    const res = await axios.post(`${API}/api/boost`, { url }, { timeout: 15000 });
-                    if (res.data.success) sent += 100;
-                    document.getElementById('stats').innerHTML = `Boost Running<br>Sent: ${sent.toLocaleString()}`;
-                } catch (e) {
-                    console.log("Boost request failed");
-                }
-            }, 4000);
-        }
-
-        function stopBoost() {
-            clearInterval(boostInt);
-            document.getElementById('stats').textContent = "Boost Stopped";
-        }
-
-        function logout() {
-            localStorage.removeItem('boost_key');
-            location.reload();
-        }
-
-        function updateActive() {
-            activeInt = setInterval(async () => {
-                try {
-                    const res = await axios.get(`${API}/api/sessions`);
-                    document.getElementById('active').textContent = `Active Users: ${res.data.count}`;
-                } catch {}
-            }, 5000);
-        }
-
-        // Auto login
-        window.onload = () => {
-            if (localStorage.getItem('boost_key')) {
-                document.getElementById('key').value = localStorage.getItem('boost_key');
-                activate();
-            }
-        };
-    </script>
 </body>
 </html>
